@@ -35,7 +35,7 @@ Majoration le dimanche. Un montant minimum s'applique par service.
 
 ## Technique
 
-- React + TypeScript + Tailwind, construit avec Vite, hébergé sur GitHub Pages
+- React + TypeScript + Tailwind, construit avec Vite. En ligne sur ajsdelivery.be (one.com), copie sur GitHub Pages
 - Adresses : [Photon](https://photon.komoot.io) — distances par la route : [OSRM](https://project-osrm.org)
   (données © OpenStreetMap, sans clé API). Si un service ne répond pas, la distance est estimée.
 - Aucun cookie, aucune donnée stockée : la demande n'existe que dans le WhatsApp d'AJS.
@@ -49,9 +49,15 @@ npm test        # tests des calculs
 npm run build   # version de production dans dist/
 ```
 
+## Visuels
+
+- Logo (vectorisé depuis le logo officiel) : `src/assets/logo.svg`
+- Photos des camionnettes détourées : `src/assets/vw.webp` et `src/assets/man.webp`
+- Couleurs et polices : `tailwind.config.js` (orange `#FA5B07`, polices Archivo et JetBrains Mono)
+- Carte de la zone : `src/components/carteDonnees.ts`, généré à partir de Natural Earth (domaine public)
+
 ## Prochaines étapes possibles
 
-- Nom de domaine propre (ex. ajsdelivery.be) branché sur GitHub Pages
 - Bot WhatsApp (API officielle Meta) qui utilise le même moteur de prix
 - Enregistrement des demandes + tableau de bord des réservations
 - Service d'itinéraires avec clé (OpenRouteService ou Google) si le volume augmente

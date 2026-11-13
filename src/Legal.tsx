@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import { ENTREPRISE } from "./config/entreprise";
-import { Entete, Pied } from "./App";
+import { Entete, Pied } from "./components/Cadre";
 
-const A_COMPLETER = <mark className="bg-orange-pale px-1">à compléter</mark>;
+const A_COMPLETER = <mark className="rounded bg-orange px-1 text-encre">à compléter</mark>;
 const val = (v: string) => (v ? v : A_COMPLETER);
 
 function Page({ titre, children }: { titre: string; children: ReactNode }) {
@@ -10,13 +10,13 @@ function Page({ titre, children }: { titre: string; children: ReactNode }) {
     <>
       <Entete />
       <main className="mx-auto max-w-3xl px-4 pb-16 pt-4 sm:px-6">
-        <p>
-          <a className="lien-noir text-[0.95rem]" href="./">
+        <p className="pt-6">
+          <a className="lien text-[0.95rem]" href="./">
             Retour au calculateur
           </a>
         </p>
-        <h1 className="titre mt-4 text-[2.6rem] sm:text-[3.4rem]">{titre}</h1>
-        <div className="bon mt-6 space-y-6 p-5 text-[1.02rem] sm:p-8 leading-relaxed [&_h2]:font-display [&_h2]:text-[1.5rem] [&_h2]:font-bold [&_h2]:leading-tight [&_p]:max-w-[68ch] [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-1">
+        <h1 className="titre mt-5 text-[clamp(2.4rem,9vw,3.6rem)]">{titre}</h1>
+        <div className="carte mt-8 space-y-6 p-5 text-[1.02rem] leading-relaxed text-craie/90 sm:p-8 [&_h2]:titre [&_h2]:text-[1.3rem] [&_h2]:text-craie [&_li]:marker:text-orange [&_p]:max-w-[68ch] [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6">
           {children}
         </div>
       </main>

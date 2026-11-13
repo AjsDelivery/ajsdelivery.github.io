@@ -78,12 +78,12 @@ export default function AdresseChamp({ label, valeur, onChange, reference, avecP
   if (valeur) {
     return (
       <div>
-        <p className="text-[0.85rem] font-semibold text-gris mb-1">{label}</p>
-        <div className="flex items-start gap-3 rounded-lg bg-beton/70 border-2 border-encre px-3 py-2.5">
-          <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-orange-fonce" aria-hidden />
+        <p className="mb-1 text-[0.85rem] font-semibold text-brume">{label}</p>
+        <div className="flex items-start gap-3 rounded-lg border border-orange/50 bg-nuit px-3 py-2.5">
+          <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-orange" aria-hidden />
           <div className="min-w-0 flex-1">
             <p className="font-semibold leading-snug">{valeur.label}</p>
-            <p className="text-[0.85rem] text-gris">
+            <p className="text-[0.85rem] text-brume">
               {valeur.precision ? `Précision ± ${valeur.precision} m. ` : ""}
               <a className="lien" href={lienMaps(valeur)} target="_blank" rel="noreferrer">
                 Vérifier sur la carte
@@ -108,11 +108,11 @@ export default function AdresseChamp({ label, valeur, onChange, reference, avecP
   const listeId = `${id}-liste`;
   return (
     <div className="relative">
-      <label htmlFor={id} className="block text-[0.85rem] font-semibold text-gris mb-1">
+      <label htmlFor={id} className="mb-1 block text-[0.85rem] font-semibold text-brume">
         {label}
       </label>
       <div className="relative">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gris-clair" aria-hidden />
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-brume" aria-hidden />
         <input
           ref={inputRef}
           id={id}
@@ -141,25 +141,25 @@ export default function AdresseChamp({ label, valeur, onChange, reference, avecP
             } else if (e.key === "Escape") setOuvert(false);
           }}
         />
-        {charge && <Loader2 className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 animate-spin text-gris" aria-label="Recherche…" />}
+        {charge && <Loader2 className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 animate-spin text-brume" aria-label="Recherche…" />}
       </div>
 
       {ouvert && resultats.length > 0 && (
-        <ul id={listeId} role="listbox" className="absolute z-30 mt-1 w-full overflow-hidden rounded-lg border-2 border-encre bg-papier">
+        <ul id={listeId} role="listbox" className="absolute z-30 mt-1 w-full overflow-hidden rounded-lg border border-filet bg-bitume shadow-2xl">
           {resultats.map((r, i) => (
             <li key={r.label + i} role="option" aria-selected={i === actif}>
               <button
                 type="button"
-                className={`flex w-full items-center gap-3 px-3 py-2.5 text-left hover:bg-beton ${i === actif ? "bg-beton" : ""} ${
-                  i ? "border-t border-gris-filet" : ""
+                className={`flex w-full items-center gap-3 px-3 py-2.5 text-left hover:bg-filet ${i === actif ? "bg-filet" : ""} ${
+                  i ? "border-t border-filet" : ""
                 }`}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => choisir(r)}
               >
-                <MapPin className="h-4 w-4 shrink-0 text-gris" aria-hidden />
+                <MapPin className="h-4 w-4 shrink-0 text-orange" aria-hidden />
                 <span className="min-w-0 flex-1 leading-snug">{r.label}</span>
                 {reference && (
-                  <span className="chiffres shrink-0 text-[0.85rem] text-gris">≈ {Math.round(volOiseau(reference, r) * 1.3)} km</span>
+                  <span className="chiffres shrink-0 font-mono text-[0.8rem] text-brume">≈ {Math.round(volOiseau(reference, r) * 1.3)} km</span>
                 )}
               </button>
             </li>
@@ -168,13 +168,13 @@ export default function AdresseChamp({ label, valeur, onChange, reference, avecP
       )}
 
       {avecPosition && (
-        <button type="button" className="btn btn-noir mt-2 w-full text-[1.05rem]" onClick={utiliserPosition} disabled={localisation}>
+        <button type="button" className="btn btn-sombre mt-2 w-full !text-[0.95rem]" onClick={utiliserPosition} disabled={localisation}>
           {localisation ? <Loader2 className="h-5 w-5 animate-spin" aria-hidden /> : <Crosshair className="h-5 w-5" aria-hidden />}
           {localisation ? "Localisation en cours…" : "Utiliser ma position"}
         </button>
       )}
       {erreur && (
-        <p role="alert" className="mt-2 text-[0.9rem] font-medium text-orange-fonce">
+        <p role="alert" className="mt-2 text-[0.9rem] font-medium text-orange-vif">
           {erreur}
         </p>
       )}

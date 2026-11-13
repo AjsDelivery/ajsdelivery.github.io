@@ -1,7 +1,11 @@
 /**
  * La route entre l'enlèvement et la livraison, jalonnée de bornes kilométriques.
- * C'est l'élément visuel signature du site.
+ * Quand la distance est connue, la camionnette AJS roule du départ à l'arrivée
+ * et le compteur de km défile.
  */
+import { useEffect, useState } from "react";
+import { CountUp, VanAJS } from "./Motion";
+
 interface Props {
   depart: string;
   arrivee: string;
@@ -12,34 +16,44 @@ interface Props {
 
 export default function Route({ depart, arrivee, km, minutes, chargement }: Props) {
   const bornes = km ? Math.min(14, Math.max(4, Math.round(km / 8))) : 8;
+  const arrivee_ok = !!km && !chargement;
+  const [roule, setRoule] = useState(false);
+
+  useEffect(() => {
+    setRoule(true);
+    const t = setTimeout(() => setRoule(false), 1500);
+    return () => clearTimeout(t);
+  }, [arrivee_ok, km]);
+
   return (
-    <div aria-hidden={false}>
+    <div>
       <div className="flex items-end justify-between gap-3 text-[0.85rem] font-semibold">
-        <span className="min-w-0 truncate">{depart}</span>
-        <span className="min-w-0 truncate text-right">{arrivee}</span>
+        <span className="min-w-0 flex-1 truncate">{depart}</span>
+        <span className="chiffres shrink-0 rounded-md border border-orange/60 bg-nuit px-2 py-0.5 font-mono text-[0.85rem] font-medium leading-tight text-orange">
+          {chargement ? "…" : km ? <CountUp valeur={Math.round(km)} format={(n) => `${Math.round(n)} KM`} /> : "— KM"}
+        </span>
+        <span className="min-w-0 flex-1 truncate text-right">{arrivee}</span>
       </div>
-      <div className="relative mt-2 h-9" role="img" aria-label={km ? `${Math.round(km)} kilomètres` : "Distance en calcul"}>
-        {/* la route */}
-        <div className="absolute inset-x-2 top-1/2 h-[10px] -translate-y-1/2 rounded-full bg-encre" />
+      <div className="relative mt-1 h-[44px]" role="img" aria-label={km ? `${Math.round(km)} kilomètres` : "Distance en calcul"}>
         <div
-          className={`absolute inset-x-2 top-1/2 h-[2px] -translate-y-1/2 ${chargement ? "animate-pulse" : ""}`}
-          style={{ backgroundImage: "repeating-linear-gradient(90deg,#FF7A00 0 10px,transparent 10px 18px)" }}
-        />
-        {/* bornes kilométriques */}
-        <div className="absolute inset-x-6 top-0 flex h-full justify-between">
+          className="absolute bottom-[14px] w-[54px] transition-[left] duration-[1400ms] ease-[cubic-bezier(.45,.05,.25,1)]"
+          style={{ left: arrivee_ok ? "calc(100% - 58px)" : "4px" }}
+        >
+          <div className={roule ? "roule" : ""}>
+            <VanAJS className="h-auto w-full text-orange" />
+          </div>
+        </div>
+        <div className="absolute inset-x-2 bottom-[6px] h-[10px] rounded-full bg-nuit" />
+        <div className={`route-calcul absolute inset-x-2 bottom-[10px] h-[2px] ${chargement ? "en-cours" : ""}`} />
+        <div className="absolute inset-x-6 bottom-0 flex h-[4px] justify-between">
           {Array.from({ length: bornes }).map((_, i) => (
-            <span key={i} className="mt-[3px] block h-[7px] w-[2px] bg-gris-clair" />
+            <span key={i} className="block h-[4px] w-[1px] bg-brume/50" />
           ))}
         </div>
-        {/* départ / arrivée */}
-        <span className="absolute left-0 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-[3px] border-encre bg-orange" />
-        <span className="absolute right-0 top-1/2 h-5 w-5 -translate-y-1/2 rounded-[4px] border-[3px] border-encre bg-papier" />
-        {/* la borne centrale avec les km */}
-        <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md border-2 border-encre bg-papier px-2 py-0.5 font-display text-[1rem] font-bold leading-tight chiffres">
-          {chargement ? "…" : km ? `${Math.round(km)} km` : "— km"}
-        </span>
+        <span className="absolute bottom-[2px] left-0 h-[18px] w-[18px] rounded-full border-[3px] border-nuit bg-orange" />
+        <span className="absolute bottom-[2px] right-0 h-[18px] w-[18px] rounded-[4px] border-[3px] border-nuit bg-craie" />
       </div>
-      {minutes ? <p className="mt-1 text-center text-[0.8rem] text-gris">environ {minutes} min de route</p> : null}
+      {minutes ? <p className="mt-1 text-center text-[0.8rem] text-brume">environ {minutes} min de route</p> : null}
     </div>
   );
 }

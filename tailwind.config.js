@@ -4,16 +4,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        beton: "#ECEDE9", // gris clair (zones dans le bon)
-        papier: "#FFFFFF", // le bon de transport
-        encre: "#000000", // impression thermique
-        // Orange RS Berkane : la couleur du maillot des "Orange Boys"
-        orange: { DEFAULT: "#FF7A00", vif: "#FF9433", fonce: "#A84604", pale: "#FFE6CC" },
-        gris: { DEFAULT: "#4B4E52", clair: "#8A8D91", filet: "#C9CBC6" },
+        nuit: "#121212", // fond de page (la route de nuit)
+        asphalte: "#1B1B1B", // cartes, calculateur
+        bitume: "#242424", // champs et boutons secondaires
+        filet: "#333333", // bordures
+        craie: "#F3F2EF", // texte principal
+        brume: "#A6A6A6", // texte secondaire
+        encre: "#000000", // texte posé sur l'orange
+        // Orange AJS / RS Berkane, relevé sur la vidéo AJS Delivery
+        orange: { DEFAULT: "#FA5B07", vif: "#FF7A2E", fonce: "#B83F00" },
       },
       fontFamily: {
-        display: ['"Barlow Semi Condensed"', "Barlow", "system-ui", "sans-serif"],
-        sans: ["Barlow", "system-ui", "sans-serif"],
+        display: ['"Archivo Variable"', "Archivo", "system-ui", "sans-serif"],
+        sans: ['"Archivo Variable"', "Archivo", "system-ui", "sans-serif"],
+        mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
       },
     },
   },

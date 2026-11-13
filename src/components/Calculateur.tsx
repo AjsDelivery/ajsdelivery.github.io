@@ -7,6 +7,7 @@ import { calculerItineraire, type Itineraire, type Lieu } from "../lib/geo";
 import { construireMessage, lienAppel, lienSMS, lienWhatsApp, nouvelleRef, NOMS_SERVICES, type Demande } from "../lib/message";
 import AdresseChamp from "./AdresseChamp";
 import Route, { IconeWhatsApp } from "./Route";
+import { CountUp } from "./Motion";
 
 const SERVICES: { id: ServiceId; icone: typeof Truck; aide: string }[] = [
   { id: "demenagement", icone: Sofa, aide: "Meubles, cartons, électroménager" },
@@ -68,6 +69,16 @@ export default function Calculateur({ onPrix }: { onPrix?: (ttc: number | null) 
   const optionChoisie = opts.find((o) => o.id === optionId);
   const avecEtages = service === "demenagement" || service === "marchandises";
   const planifie = service !== "express" || !immediat;
+
+  // Les boutons « Calculer ce prix » de la page pré-sélectionnent le service
+  useEffect(() => {
+    const choisir = (e: Event) => {
+      const id = (e as CustomEvent<ServiceId>).detail;
+      if (id) setService(id);
+    };
+    window.addEventListener("ajs:service", choisir);
+    return () => window.removeEventListener("ajs:service", choisir);
+  }, []);
 
   // Itinéraire réel dès que les deux adresses sont connues
   useEffect(() => {
@@ -136,11 +147,11 @@ export default function Calculateur({ onPrix }: { onPrix?: (ttc: number | null) 
   }, [pret, service, depart, arrivee, devis, ref, optionChoisie, accesDepart, accesArrivee, immediat, deuxiemePersonne, heures, planifie, date, creneau, nom, note, itin]);
 
   return (
-    <form className="bon min-w-0 overflow-visible" onSubmit={(e) => e.preventDefault()} aria-label="Calculer le prix d'un transport">
+    <form className="carte lueur-calcul min-w-0 overflow-visible" onSubmit={(e) => e.preventDefault()} aria-label="Calculer le prix d'un transport">
       {/* En-tête du bon */}
       <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-5">
-        <p className="font-display text-[1.25rem] font-extrabold leading-none">Bon de transport</p>
-        <p className="chiffres text-[0.8rem] text-gris">Réf. {ref}</p>
+        <p className="titre whitespace-nowrap text-[1.2rem] sm:text-[1.35rem]">Bon de transport</p>
+        <p className="chiffres whitespace-nowrap font-mono text-[0.68rem] tracking-[0.08em] text-brume">{ref}</p>
       </div>
 
       {/* 1. Service */}
@@ -156,11 +167,11 @@ export default function Calculateur({ onPrix }: { onPrix?: (ttc: number | null) 
               type="button"
               aria-pressed={service === id}
               onClick={() => setService(id)}
-              className="group flex flex-col items-start gap-1 rounded-lg border-2 border-encre/80 bg-papier p-3 text-left transition-colors hover:bg-beton aria-pressed:border-encre aria-pressed:bg-encre aria-pressed:text-papier"
+              className="group flex flex-col items-start gap-1 rounded-xl border border-filet bg-bitume p-3 text-left transition-colors hover:border-brume/60 aria-pressed:border-orange aria-pressed:bg-orange aria-pressed:text-encre"
             >
-              <Icone className="h-6 w-6 text-orange-fonce group-aria-pressed:text-orange" aria-hidden />
-              <span className="font-display text-[1.05rem] font-bold leading-tight">{NOMS_SERVICES[id]}</span>
-              <span className="text-[0.8rem] leading-snug text-gris group-aria-pressed:text-papier/75">{aide}</span>
+              <Icone className="h-6 w-6 text-orange group-aria-pressed:text-encre" aria-hidden />
+              <span className="font-display text-[1.02rem] font-extrabold leading-tight">{NOMS_SERVICES[id]}</span>
+              <span className="text-[0.8rem] leading-snug text-brume group-aria-pressed:text-encre/75">{aide}</span>
             </button>
           ))}
         </div>
@@ -179,7 +190,11 @@ export default function Calculateur({ onPrix }: { onPrix?: (ttc: number | null) 
           avecPosition
           placeholder="Adresse de départ"
         />
-        {avecEtages && depart && <ChoixAcces valeur={accesDepart} onChange={setAccesDepart} />}
+        {avecEtages && depart && (
+          <div className="apparait">
+            <ChoixAcces valeur={accesDepart} onChange={setAccesDepart} />
+          </div>
+        )}
         <AdresseChamp
           label="Livraison"
           valeur={arrivee}
@@ -187,12 +202,16 @@ export default function Calculateur({ onPrix }: { onPrix?: (ttc: number | null) 
           reference={depart ?? ENTREPRISE.depot}
           placeholder="Adresse d'arrivée"
         />
-        {avecEtages && arrivee && <ChoixAcces valeur={accesArrivee} onChange={setAccesArrivee} />}
+        {avecEtages && arrivee && (
+          <div className="apparait">
+            <ChoixAcces valeur={accesArrivee} onChange={setAccesArrivee} />
+          </div>
+        )}
       </div>
 
       {/* 3. Détails */}
       {service && (
-        <div className="bon-section">
+        <div className="bon-section apparait" key={`details-${service}`}>
           <p className="bon-titre">
             <span className="bon-num">3</span>
             {service === "demenagement" ? "Quel volume ?" : service === "chauffeur" ? "Combien de temps ?" : "Quel chargement ?"}
@@ -227,7 +246,7 @@ export default function Calculateur({ onPrix }: { onPrix?: (ttc: number | null) 
             <label className="mt-3 flex items-center gap-3 text-[0.95rem] font-medium">
               <input
                 type="checkbox"
-                className="h-5 w-5 accent-[#000]"
+                className="h-5 w-5 accent-[#FA5B07]"
                 checked={deuxiemePersonne}
                 onChange={(e) => setDeuxiemePersonne(e.target.checked)}
               />
@@ -235,7 +254,7 @@ export default function Calculateur({ onPrix }: { onPrix?: (ttc: number | null) 
             </label>
           )}
           {service === "demenagement" && optionChoisie?.id === "maison" && (
-            <p className="mt-3 flex gap-2 text-[0.9rem] text-gris">
+            <p className="mt-3 flex gap-2 text-[0.9rem] text-brume">
               <Info className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
               Pour une maison, on calcule le prix ensemble : envoyez la demande, on vous rappelle.
             </p>
@@ -245,7 +264,7 @@ export default function Calculateur({ onPrix }: { onPrix?: (ttc: number | null) 
 
       {/* 4. Quand */}
       {service && (
-        <div className="bon-section">
+        <div className="bon-section apparait" style={{ animationDelay: "80ms" }}>
           <p className="bon-titre">
             <span className="bon-num">4</span>Quand ?
           </p>
@@ -323,7 +342,7 @@ export default function Calculateur({ onPrix }: { onPrix?: (ttc: number | null) 
       )}
 
       {/* Ticket de prix */}
-      <div id="prix" className="perfo mt-2 rounded-b-[12px] bg-papier px-4 pb-5 pt-5 sm:px-5" aria-live="polite">
+      <div id="prix" className="perfo mt-2 rounded-b-2xl px-4 pb-5 pt-5 sm:px-5" aria-live="polite">
         <Route
           depart={depart?.ville ?? "Enlèvement"}
           arrivee={arrivee?.ville ?? "Livraison"}
@@ -334,18 +353,18 @@ export default function Calculateur({ onPrix }: { onPrix?: (ttc: number | null) 
 
         <div className="mt-5 flex items-end justify-between gap-4">
           <div>
-            <p className="text-[0.9rem] font-semibold text-gris">
+            <p className="text-[0.9rem] font-semibold text-brume">
               {devis?.surDevis ? "Prix" : devis?.tvaApplicable === false ? "Prix estimé" : "Prix estimé TVAC"}
             </p>
             {devis && !devis.surDevis && (
-              <p className="chiffres text-[0.8rem] text-gris">
+              <p className="chiffres text-[0.8rem] text-brume">
                 {Math.round(devis.kmTotal)} km au total, approche comprise
                 {devis.voyages > 1 ? ` (${devis.voyages} voyages)` : ""}
               </p>
             )}
           </div>
-          <p className="titre chiffres text-right text-[2.75rem] sm:text-[3.25rem]">
-            {calcul ? "…" : devis ? (devis.surDevis ? "Sur devis" : euros(devis.totalTTC)) : "— €"}
+          <p className="titre chiffres text-right text-[2.75rem] text-orange sm:text-[3.25rem]">
+            {calcul ? "…" : devis ? devis.surDevis ? "Sur devis" : <CountUp valeur={devis.totalTTC} format={euros} /> : "— €"}
           </p>
         </div>
 
@@ -356,26 +375,26 @@ export default function Calculateur({ onPrix }: { onPrix?: (ttc: number | null) 
               <ChevronDown className={`h-4 w-4 transition-transform ${detail ? "rotate-180" : ""}`} aria-hidden />
             </button>
             {detail && (
-              <dl className="mt-2 space-y-1 text-[0.9rem]">
+              <dl className="apparait mt-2 space-y-1 text-[0.9rem]">
                 {[...devis.lignes, ...devis.majorations].map((l) => (
                   <div key={l.label} className="flex justify-between gap-4">
-                    <dt className="text-gris">{l.label}</dt>
+                    <dt className="text-brume">{l.label}</dt>
                     <dd className="chiffres shrink-0">{euros(l.montant)}</dd>
                   </div>
                 ))}
                 {devis.minimumApplique && (
                   <div className="flex justify-between gap-4">
-                    <dt className="text-gris">Montant minimum de la course</dt>
+                    <dt className="text-brume">Montant minimum de la course</dt>
                     <dd className="chiffres shrink-0">{euros(devis.totalHT)}</dd>
                   </div>
                 )}
-                <div className="flex justify-between gap-4 border-t border-gris-filet pt-1 font-semibold">
+                <div className="flex justify-between gap-4 border-t border-filet pt-1 font-semibold">
                   <dt>Total HTVA</dt>
                   <dd className="chiffres">{euros(devis.totalHT)}</dd>
                 </div>
                 {devis.tvaApplicable && (
                   <div className="flex justify-between gap-4">
-                    <dt className="text-gris">TVA {Math.round(TARIFS.tva.taux * 100)} %</dt>
+                    <dt className="text-brume">TVA {Math.round(TARIFS.tva.taux * 100)} %</dt>
                     <dd className="chiffres">{euros(devis.tva)}</dd>
                   </div>
                 )}
@@ -385,17 +404,17 @@ export default function Calculateur({ onPrix }: { onPrix?: (ttc: number | null) 
         )}
 
         {itin?.estimation && (
-          <p className="mt-2 text-[0.8rem] text-gris">Distance estimée : le calcul d'itinéraire ne répond pas, on la vérifie avant de confirmer.</p>
+          <p className="mt-2 text-[0.8rem] text-brume">Distance estimée : le calcul d'itinéraire ne répond pas, on la vérifie avant de confirmer.</p>
         )}
 
         {/* Coordonnées facultatives */}
         <div className="mt-5 grid gap-2 sm:grid-cols-2">
           <label className="block">
-            <span className="mb-1 block text-[0.85rem] font-semibold text-gris">Votre prénom (facultatif)</span>
+            <span className="mb-1 block text-[0.85rem] font-semibold text-brume">Votre prénom (facultatif)</span>
             <input className="champ" value={nom} onChange={(e) => setNom(e.target.value)} autoComplete="given-name" />
           </label>
           <label className="block sm:col-span-2">
-            <span className="mb-1 block text-[0.85rem] font-semibold text-gris">Précisions (facultatif)</span>
+            <span className="mb-1 block text-[0.85rem] font-semibold text-brume">Précisions (facultatif)</span>
             <textarea
               className="champ min-h-[76px] resize-y"
               value={note}
@@ -408,35 +427,35 @@ export default function Calculateur({ onPrix }: { onPrix?: (ttc: number | null) 
         {/* Envoi */}
         <div className="mt-4 space-y-2">
           {pret ? (
-            <a href={lienWhatsApp(message)} target="_blank" rel="noreferrer" className="btn btn-orange w-full text-[1.2rem]">
+            <a href={lienWhatsApp(message)} target="_blank" rel="noreferrer" className="btn btn-orange w-full !text-[1.1rem]">
               <IconeWhatsApp className="h-6 w-6" />
               Envoyer sur WhatsApp
             </a>
           ) : (
-            <button type="button" disabled className="btn btn-orange w-full text-[1.2rem]">
+            <button type="button" disabled className="btn btn-orange w-full !text-[1.1rem]">
               <IconeWhatsApp className="h-6 w-6" />
               Envoyer sur WhatsApp
             </button>
           )}
-          {!pret && <p className="text-center text-[0.85rem] text-gris">Il manque : {manque.join(", ") || "le calcul de la distance"}.</p>}
+          {!pret && <p className="text-center text-[0.85rem] text-brume">Il manque : {manque.join(", ") || "le calcul de la distance"}.</p>}
           <div className="grid grid-cols-2 gap-2">
             {pret ? (
-              <a href={lienSMS(message)} className="btn btn-contour text-[1.05rem]">
+              <a href={lienSMS(message)} className="btn btn-sombre !text-[0.95rem]">
                 <MessageSquareText className="h-5 w-5" aria-hidden />
                 Par SMS
               </a>
             ) : (
-              <button type="button" disabled className="btn btn-contour text-[1.05rem]">
+              <button type="button" disabled className="btn btn-sombre !text-[0.95rem]">
                 <MessageSquareText className="h-5 w-5" aria-hidden />
                 Par SMS
               </button>
             )}
-            <a href={lienAppel()} className="btn btn-contour text-[1.05rem]">
+            <a href={lienAppel()} className="btn btn-sombre !text-[0.95rem]">
               <Phone className="h-5 w-5" aria-hidden />
               Appeler
             </a>
           </div>
-          <p className="pt-1 text-[0.8rem] leading-snug text-gris">
+          <p className="pt-1 text-[0.8rem] leading-snug text-brume">
             Prix calculé selon notre grille tarifaire. {ENTREPRISE.nom} vous confirme le prix et l'heure par WhatsApp avant toute
             intervention. Rien n'est réservé tant que vous n'avez pas reçu cette confirmation.
           </p>
