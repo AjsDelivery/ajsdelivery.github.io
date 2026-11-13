@@ -33,10 +33,10 @@ export function MentionsLegales() {
         <h2>Éditeur du site</h2>
         <ul>
           <li>Nom : {val(l.raisonSociale)}</li>
-          <li>Forme juridique : {val(l.formeJuridique)}</li>
+          {l.formeJuridique && <li>Forme juridique : {l.formeJuridique}</li>}
           <li>Adresse : {val(l.adresseSiege)}</li>
           <li>Numéro d'entreprise (BCE) : {val(l.numeroEntreprise)}</li>
-          <li>TVA : {l.numeroTVA || "non assujetti ou à compléter"}</li>
+          <li>TVA : {l.numeroTVA || "non assujetti"}</li>
           <li>
             Téléphone : {ENTREPRISE.telephoneAffiche}, e-mail : {ENTREPRISE.email}
           </li>
@@ -44,7 +44,7 @@ export function MentionsLegales() {
       </section>
       <section>
         <h2>Hébergement</h2>
-        <p>Le site est hébergé par GitHub Pages (GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis).</p>
+        <p>Le site est hébergé par one.com (www.one.com).</p>
       </section>
       <section>
         <h2>Prix affichés</h2>
