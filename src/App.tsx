@@ -339,7 +339,7 @@ export default function App() {
               <p className="entree inline-flex rounded-md border border-orange/40 bg-orange/10 px-3 py-1.5 font-mono text-[0.72rem] font-medium uppercase tracking-[0.2em] text-orange">
                 Sous-traitant GLS<span className="hidden sm:inline">&nbsp;· 30 000+ colis livrés</span>
               </p>
-              <h1 className="titre mt-5 text-[clamp(2.9rem,13vw,6rem)] lg:text-[4.3rem] xl:text-[5.1rem]">
+              <h1 className="titre mt-5 text-[clamp(2.4rem,13vw,6rem)] lg:text-[4.3rem] xl:text-[5.1rem]">
                 <span className="ligne-titre">
                   <span>Le dernier</span>
                 </span>
