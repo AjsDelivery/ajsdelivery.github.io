@@ -1,0 +1,132 @@
+@import "@fontsource/barlow/400.css";
+@import "@fontsource/barlow/500.css";
+@import "@fontsource/barlow/600.css";
+@import "@fontsource/barlow/700.css";
+@import "@fontsource/barlow-semi-condensed/600.css";
+@import "@fontsource/barlow-semi-condensed/700.css";
+@import "@fontsource/barlow-semi-condensed/800.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-orange text-encre font-sans antialiased;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  :focus-visible {
+    outline: 3px solid #000;
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Titres "panneau routier" */
+  .titre {
+    @apply font-display font-extrabold leading-[0.95] tracking-[-0.01em];
+  }
+
+  /* Le bon de transport */
+  .bon {
+    @apply bg-papier border-2 border-encre rounded-[14px];
+  }
+  .bon-section {
+    @apply px-4 py-4 sm:px-5 border-t-2 border-dashed border-gris-filet;
+  }
+  .bon-titre {
+    @apply font-display font-bold text-[1.15rem] leading-tight flex items-center gap-2;
+  }
+  .bon-num {
+    @apply inline-flex items-center justify-center w-6 h-6 rounded-full bg-encre text-papier text-[0.8rem] font-sans font-bold shrink-0;
+  }
+
+  /* Pastilles de choix */
+  .pastille {
+    @apply inline-flex items-center gap-1.5 rounded-lg border-2 border-encre/80 bg-papier px-3 py-2 text-[0.95rem] font-semibold leading-tight
+      transition-colors hover:bg-beton;
+  }
+  .pastille[aria-pressed="true"],
+  .pastille[aria-checked="true"] {
+    @apply bg-encre text-papier border-encre;
+  }
+  .pastille:disabled {
+    @apply opacity-40 cursor-not-allowed hover:bg-papier;
+  }
+
+  .champ {
+    @apply w-full rounded-lg border-2 border-encre bg-papier px-3 py-2.5 text-[1rem] placeholder:text-gris-clair;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3.5 font-display font-bold text-[1.15rem] leading-none transition-[transform,background-color]
+      active:scale-[0.98];
+  }
+  .btn-orange {
+    @apply bg-orange text-encre border-2 border-encre hover:bg-orange-vif;
+  }
+  .btn-noir {
+    @apply bg-encre text-papier border-2 border-encre hover:bg-gris;
+  }
+  .btn-contour {
+    @apply bg-papier text-encre border-2 border-encre hover:bg-beton;
+  }
+  .btn:disabled {
+    @apply opacity-45 cursor-not-allowed active:scale-100;
+  }
+
+  /* Perforation du ticket de prix */
+  .perfo {
+    position: relative;
+    border-top: 2px dashed #000;
+  }
+  .perfo::before,
+  .perfo::after {
+    content: "";
+    position: absolute;
+    top: -12px;
+    width: 22px;
+    height: 22px;
+    border-radius: 9999px;
+    background: #ff7a00;
+    border: 2px solid #000;
+  }
+  .perfo::before {
+    left: -13px;
+    clip-path: inset(0 0 0 50%);
+  }
+  .perfo::after {
+    right: -13px;
+    clip-path: inset(0 50% 0 0);
+  }
+
+  .lien {
+    @apply underline decoration-2 underline-offset-[3px] decoration-orange hover:decoration-encre;
+  }
+  /* liens posés sur un fond orange */
+  .lien-noir {
+    @apply underline decoration-2 underline-offset-[3px] decoration-encre hover:decoration-papier;
+  }
+}
+
+@layer utilities {
+  .chiffres {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+}
