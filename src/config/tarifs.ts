@@ -15,8 +15,8 @@
  *  l'ancienne version reste en ligne et GitHub t'affiche
  *  une croix rouge ❌ dans l'onglet "Actions".
  *
- *  Valeurs de départ basées sur les prix observés en Belgique
- *  (novembre 2026). À ajuster selon tes coûts réels.
+ *  Grille A « Équilibrée », validée en novembre 2026 : sous les
+ *  prix des concurrents repérés en Belgique.
  * ============================================================
  */
 
@@ -31,7 +31,7 @@ export const TARIFS = {
     /** Les premiers km entre le dépôt et le client sont offerts. */
     approcheOfferteKm: 15,
     /** Prix des km d'approche au-delà de la zone offerte (par km). */
-    prixKmApproche: 0.6,
+    prixKmApproche: 0.5,
     /** Vitesse moyenne utilisée pour estimer le temps de route (déménagement). */
     vitesseMoyenneKmH: 60,
   },
@@ -42,16 +42,16 @@ export const TARIFS = {
      * prix = (prise en charge + km × prix/km) × coefficient taille
      * ------------------------------------------------------- */
     express: {
-      priseEnCharge: 25,
-      prixKm: 1.1,
-      minimum: 39,
+      priseEnCharge: 15,
+      prixKm: 0.6,
+      minimum: 25,
       tailles: [
         { id: "pli", label: "Pli ou petit colis", detail: "jusqu'à 5 kg", coef: 1 },
         { id: "colis", label: "Colis volumineux", detail: "jusqu'à 30 kg", coef: 1.2 },
         { id: "lourd", label: "Charge lourde", detail: "jusqu'à 300 kg", coef: 1.6 },
       ],
       /** Majoration si le client veut un départ immédiat (sous 2 h). 0.25 = +25 % */
-      majorationImmediat: 0.25,
+      majorationImmediat: 0.2,
     },
 
     /* ---------------------------------------------------------
@@ -60,18 +60,18 @@ export const TARIFS = {
      *        + étages sans ascenseur + 2e personne éventuelle
      * ------------------------------------------------------- */
     marchandises: {
-      priseEnCharge: 35,
-      prixKm: 0.95,
-      minimum: 59,
+      priseEnCharge: 19,
+      prixKm: 0.55,
+      minimum: 35,
       chargements: [
         { id: "petit", label: "Quelques colis / 1 palette", detail: "≈ 2 m³", coef: 1 },
         { id: "demi", label: "Demi-camionnette", detail: "≈ 6 m³", coef: 1.3 },
         { id: "plein", label: "Camionnette pleine", detail: "≈ 12 m³", coef: 1.6 },
       ],
       /** Par étage sans ascenseur, par adresse */
-      prixParEtage: 10,
+      prixParEtage: 8,
       /** Forfait pour un 2e manutentionnaire */
-      deuxiemePersonne: 45,
+      deuxiemePersonne: 35,
     },
 
     /* ---------------------------------------------------------
@@ -82,13 +82,13 @@ export const TARIFS = {
      * ------------------------------------------------------- */
     demenagement: {
       /** Camionnette + 2 déménageurs, par heure */
-      tauxHoraire: 95,
-      prixKm: 1,
-      minimum: 190,
+      tauxHoraire: 65,
+      prixKm: 0.4,
+      minimum: 130,
       /** Volume utile d'une camionnette (m³). Au-delà → plusieurs voyages. */
       capaciteCamionnetteM3: 12,
       /** Supplément par m³ et par étage sans ascenseur */
-      prixParM3ParEtage: 3.5,
+      prixParM3ParEtage: 2,
       volumes: [
         { id: "meubles", label: "Quelques meubles", detail: "≈ 5 m³", m3: 5, heures: 2 },
         { id: "studio", label: "Studio", detail: "≈ 10 m³", m3: 10, heures: 3 },
@@ -104,9 +104,9 @@ export const TARIFS = {
      * prix = heures (minimum imposé) × taux + km × prix/km
      * ------------------------------------------------------- */
     chauffeur: {
-      tauxHoraire: 45,
+      tauxHoraire: 39,
       minimumHeures: 2,
-      prixKm: 0.55,
+      prixKm: 0.4,
       choixHeures: [2, 3, 4, 6, 8],
     },
   },
