@@ -500,13 +500,29 @@ export default function App() {
                   delai={i * 90}
                   className="carte carte-service grid overflow-hidden md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"
                 >
-                  <div className="flex items-center justify-center px-8 py-10 sm:py-14" style={{ background: p.fondLogo }}>
-                    <img src={p.logo} alt={p.nom} width={544} height={118} loading="lazy" decoding="async" className="h-auto w-full max-w-[17rem]" />
-                  </div>
+                  <a
+                    href={p.site}
+                    target="_blank"
+                    rel="noopener"
+                    className="flex items-center justify-center px-8 py-10 sm:py-14"
+                    style={{ background: p.fondLogo }}
+                  >
+                    <img src={p.logo} alt={p.alt} width={544} height={118} loading="lazy" decoding="async" className="h-auto w-full max-w-[17rem]" />
+                  </a>
                   <div className="flex flex-col items-start justify-center gap-3 p-6 sm:p-8">
                     <p className="font-mono text-[0.72rem] uppercase tracking-[0.14em] text-brume">{p.domaine}</p>
                     <h3 className="titre text-[1.6rem] normal-case">{p.nom}</h3>
-                    <p className="text-brume">{p.texte}</p>
+                    <p className="text-brume">
+                      {p.texte.split(/\[(.+?)\]/).map((morceau, j) =>
+                        j % 2 === 1 ? (
+                          <a key={j} href={p.site} target="_blank" rel="noopener" className="lien text-craie">
+                            {morceau}
+                          </a>
+                        ) : (
+                          morceau
+                        ),
+                      )}
+                    </p>
                     <a href={p.site} target="_blank" rel="noopener" className="btn btn-contour mt-2">
                       {p.lien}
                       <ArrowUpRight className="h-4 w-4" aria-hidden />
