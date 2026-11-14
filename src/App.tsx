@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Check, ChevronDown, Package, Phone, Sofa, Truck, Zap } from "lucide-react";
+import { ArrowUpRight, Check, ChevronDown, Package, Phone, Sofa, Truck, Zap } from "lucide-react";
 import { ENTREPRISE } from "./config/entreprise";
 import { TARIFS } from "./config/tarifs";
+import { PARTENAIRES } from "./config/partenaires";
 import { euros } from "./lib/devis";
 import { lienAppel } from "./lib/message";
 import Calculateur from "./components/Calculateur";
@@ -480,6 +481,43 @@ export default function App() {
             </div>
           </div>
         </section>
+
+        {/* Partenaires (liste dans src/config/partenaires.ts) */}
+        {PARTENAIRES.length > 0 && (
+          <section id="partenaires" className="mx-auto max-w-6xl scroll-mt-20 px-4 pt-16 sm:px-6 sm:pt-20" aria-labelledby="t-partenaires">
+            <Reveal>
+              <p className="etiquette">Partenaires</p>
+              <h2 id="t-partenaires" className="titre mt-3 text-[clamp(2.4rem,8vw,4rem)]">
+                Ils roulent avec nous
+              </h2>
+              <p className="mt-4 max-w-[38rem] text-[1.05rem] text-brume">Des entreprises avec qui nous travaillons main dans la main.</p>
+            </Reveal>
+            <ul className="mt-8 grid gap-4">
+              {PARTENAIRES.map((p, i) => (
+                <Reveal
+                  as="li"
+                  key={p.nom}
+                  delai={i * 90}
+                  className="carte carte-service grid overflow-hidden md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"
+                >
+                  <div className="flex items-center justify-center px-8 py-10 sm:py-14" style={{ background: p.fondLogo }}>
+                    <img src={p.logo} alt={p.nom} width={544} height={118} loading="lazy" decoding="async" className="h-auto w-full max-w-[17rem]" />
+                  </div>
+                  <div className="flex flex-col items-start justify-center gap-3 p-6 sm:p-8">
+                    <p className="font-mono text-[0.72rem] uppercase tracking-[0.14em] text-brume">{p.domaine}</p>
+                    <h3 className="titre text-[1.6rem] normal-case">{p.nom}</h3>
+                    <p className="text-brume">{p.texte}</p>
+                    <a href={p.site} target="_blank" rel="noopener" className="btn btn-contour mt-2">
+                      {p.lien}
+                      <ArrowUpRight className="h-4 w-4" aria-hidden />
+                      <span className="sr-only"> (nouvel onglet)</span>
+                    </a>
+                  </div>
+                </Reveal>
+              ))}
+            </ul>
+          </section>
+        )}
 
         {/* Tarifs publics, tirés de la grille */}
         <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20" aria-labelledby="t-tarifs">
