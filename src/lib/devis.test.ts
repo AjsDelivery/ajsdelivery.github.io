@@ -1,6 +1,24 @@
 import { describe, expect, it } from "vitest";
-import { calculerDevis } from "./devis";
-import { TARIFS } from "../config/tarifs";
+import { calculerDevis as calculer, type DevisInput } from "./devis";
+import { TARIFS, type Tarifs } from "../config/tarifs";
+
+/**
+ * Grille figée pour les tests : on vérifie les calculs, pas les prix du moment.
+ * Changer les prix dans src/config/tarifs.ts ne casse donc pas les tests.
+ */
+const S = TARIFS.services;
+const GRILLE_TEST = {
+  ...TARIFS,
+  kilometres: { ...TARIFS.kilometres, approcheOfferteKm: 15, prixKmApproche: 0.6, vitesseMoyenneKmH: 60 },
+  majorations: { dimanche: 0.25 },
+  services: {
+    express: { ...S.express, priseEnCharge: 25, prixKm: 1.1, minimum: 39, majorationImmediat: 0.25 },
+    marchandises: { ...S.marchandises, priseEnCharge: 35, prixKm: 0.95, minimum: 59, prixParEtage: 10, deuxiemePersonne: 45 },
+    demenagement: { ...S.demenagement, tauxHoraire: 95, prixKm: 1, minimum: 190, capaciteCamionnetteM3: 12, prixParM3ParEtage: 3.5 },
+    chauffeur: { ...S.chauffeur, tauxHoraire: 45, minimumHeures: 2, prixKm: 0.55 },
+  },
+} as unknown as Tarifs;
+const calculerDevis = (input: DevisInput, t: Tarifs = GRILLE_TEST) => calculer(input, t);
 
 const MARDI = new Date(2026, 10, 17);
 const DIMANCHE = new Date(2026, 10, 15);
@@ -96,7 +114,7 @@ describe("Camionnette + chauffeur", () => {
 
 describe("TVA", () => {
   it("régime de franchise : pas de TVA", () => {
-    const sansTVA = { ...TARIFS, tva: { assujetti: false, taux: 0.21 } } as unknown as typeof TARIFS;
+    const sansTVA = { ...GRILLE_TEST, tva: { assujetti: false, taux: 0.21 } } as unknown as Tarifs;
     const d = calculerDevis({ service: "express", option: "pli", kmApproche: 0, kmTrajet: 48 }, sansTVA);
     expect(d.tva).toBe(0);
     expect(d.totalTTC).toBe(d.totalHT);
